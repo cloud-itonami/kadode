@@ -1,0 +1,67 @@
+{
+  "lexicon": 1,
+  "id": "com.etzhayyim.kadode.resignationRelay",
+  "description": "A 使者 (messenger) relay record for a worker's resignation (per ADR-2606112238). kadode 門出 conveys a worker's ALREADY-FORMED, unilateral resignation declaration (民法627 — a unilateral right; the employer's consent is not required) to the employer. It is a MESSENGER, never a 代理人 (agent): it does NOT and cannot negotiate terms, severance, or settlements (弁護士法72条) — any matter needing negotiation produces a `com.etzhayyim.kadode.escalation` instead. The document body lives on IPFS (referenced by `documentCid`); PII (worker/employer detail) is held in a himotoki XChaCha20-Poly1305 envelope (ADR-2605181100), never plaintext on MST. The record is created UNSENT; actually transmitting it is a G7-gated outward action requiring the worker's consent (no-server-key).",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["workerDid", "scenario", "documentCid", "documentSha256", "role", "negotiates", "status", "createdAt"],
+        "properties": {
+          "workerDid": {
+            "type": "string",
+            "format": "did",
+            "description": "DID of the worker whose own resignation this relays. The resignation is the worker's act; kadode only conveys it."
+          },
+          "scenario": {
+            "type": "string",
+            "description": "kadode labour-exit scenario id (`sc.*`) classifying the situation.",
+            "maxLength": 128
+          },
+          "employerRef": {
+            "type": "string",
+            "description": "Opaque reference to the employer (hash / himotoki-enveloped handle). Never plaintext employer PII on MST (ADR-2605181100).",
+            "maxLength": 256
+          },
+          "documentCid": {
+            "type": "string",
+            "format": "cid",
+            "description": "IPFS CIDv1 (raw/sha2-256) of the resignation document (退職届 etc.). Re-derivable with `ipfs add --cid-version=1 --raw-leaves`."
+          },
+          "documentSha256": {
+            "type": "string",
+            "description": "0x-prefixed lowercase hex SHA-256 of the document body.",
+            "minLength": 66,
+            "maxLength": 66
+          },
+          "role": {
+            "type": "string",
+            "description": "Always the messenger role. kadode is a 使者, never an agent (G1).",
+            "enum": ["messenger-使者"]
+          },
+          "negotiates": {
+            "type": "boolean",
+            "description": "MUST be false. kadode never negotiates (弁護士法72条); a true value is structurally invalid."
+          },
+          "statutoryBasis": {
+            "type": "string",
+            "description": "The DISCLOSED statutory basis of the unilateral resignation, e.g. 民法627条1項. A disclosed fact, never an enforceability verdict (N3).",
+            "maxLength": 256
+          },
+          "status": {
+            "type": "string",
+            "description": "Lifecycle. Created `drafted-unsent`; transmission (`sent`) is a separate G7-gated outward action with worker consent (no-server-key).",
+            "enum": ["drafted-unsent", "consented", "sent", "acknowledged", "withdrawn"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "ISO 8601 timestamp."
+          }
+        }
+      }
+    }
+  }
+}

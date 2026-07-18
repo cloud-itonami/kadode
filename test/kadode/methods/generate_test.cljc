@@ -1,4 +1,4 @@
-(ns kadode.methods.test-generate
+(ns kadode.methods.generate-test
   "kadode 門出 — document-generator + 使者-relay tests (ADR-2606112238).
   1:1 Clojure port of tests/test_generate.py (every assertion).
 
@@ -17,7 +17,7 @@
             [kadode.methods.cid :as cid]
             [kadode.methods.generate :as generate]))
 
-(def actor-dir (-> *file* io/file .getParentFile .getParentFile))
+(def actor-dir (io/file "."))
 (def seed (io/file actor-dir "data" "seed-resignation-graph.kotoba.edn"))
 (defn load-seed [] (analyze/load-file* seed))
 

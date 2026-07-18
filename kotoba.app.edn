@@ -1,0 +1,7 @@
+;; kotoba.app.edn — actor:kadode KOTOBA Mesh application manifest (service concierge on-http, SERVICE-MESH-PATTERN.md).
+{:kotoba.app/name    "kadode"
+ :kotoba.app/version "0.1.0"
+ :kotoba.app/components
+ [{:name "kadode" :src "methods/mesh.clj" :scale 1
+   :triggers [{:type :http :route "/kadode"}] :requires #{:cap/kqe}}]
+ :kotoba.app/placement {:spread :zone :require {:tier "edge"}}}

@@ -1,4 +1,4 @@
-(ns kadode.methods.test-cid
+(ns kadode.methods.cid-test
   "kadode 門出 — CIDv1 content-address tests (ADR-2606112238).
 
   There is no test_cid.py in the source (cid.py is exercised transitively by test_generate.py's

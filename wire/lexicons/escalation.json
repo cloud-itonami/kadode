@@ -1,0 +1,46 @@
+{
+  "lexicon": 1,
+  "id": "com.etzhayyim.kadode.escalation",
+  "description": "An escalation record emitted when a worker's matter needs NEGOTIATION and therefore CANNOT be handled by kadode as a 使者 (per ADR-2606112238). This is the structural expression of the G1 / 弁護士法72条 boundary: when the goal is not a pure unilateral resignation but a negotiation (未払い賃金請求 / 退職条件 / 示談 / 損害賠償への対応), kadode REFUSES to relay and routes the worker to a labour union (団体交渉権, 労働組合法6) or a lawyer (法律事務). kadode never negotiates; it hands off. This record is the honest, on-log proof that the boundary was respected.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["scenario", "relayed", "escalateActor", "reason", "createdAt"],
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "kadode labour-exit scenario id (`sc.*`).",
+            "maxLength": 128
+          },
+          "relayed": {
+            "type": "boolean",
+            "description": "MUST be false — kadode did NOT relay this matter (it needs negotiation, G1)."
+          },
+          "escalateTo": {
+            "type": "string",
+            "description": "kadode route id the worker is referred to (`r.union` / `r.lawyer`).",
+            "maxLength": 128
+          },
+          "escalateActor": {
+            "type": "string",
+            "description": "WHO can lawfully handle the negotiation — a labour union (団体交渉) or a lawyer.",
+            "enum": [":labor-union", ":lawyer"]
+          },
+          "reason": {
+            "type": "string",
+            "description": "Plain-language reason for the escalation (negotiation is out of kadode's 使者 scope).",
+            "maxLength": 512
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "ISO 8601 timestamp."
+          }
+        }
+      }
+    }
+  }
+}

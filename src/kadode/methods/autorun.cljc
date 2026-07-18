@@ -46,7 +46,7 @@
 
 #?(:clj
    (defn default-seed-path []
-     (str (io/file here-dir "data" "seed-resignation-graph.kotoba.edn"))))
+     (str (io/file "data" "seed-resignation-graph.kotoba.edn"))))
 
 #?(:clj
    (defn ground-datoms

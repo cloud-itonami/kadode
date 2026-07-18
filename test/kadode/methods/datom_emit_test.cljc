@@ -1,4 +1,4 @@
-(ns kadode.methods.test-datom-emit
+(ns kadode.methods.datom-emit-test
   "kadode 門出 — Datom-emit tests (ADR-2606112238), 1:1 port of the deferred datom tests in
   tests/test_analyze.py (test_datom_emit_ground_and_transient + test_determinism)."
   (:require [clojure.test :refer [deftest is]]
@@ -6,9 +6,7 @@
             [kadode.methods.analyze :as analyze]
             [kadode.methods.datom-emit :as datom-emit]))
 
-(def seed
-  (str (-> (clojure.java.io/file *file*) .getParentFile .getParentFile)
-       "/data/seed-resignation-graph.kotoba.edn"))
+(def seed "data/seed-resignation-graph.kotoba.edn")
 
 (defn- load-seed [] (datom-emit/load-file* seed))
 

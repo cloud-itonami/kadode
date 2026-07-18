@@ -126,7 +126,7 @@
 ;; *file* is only bound during namespace load (it derefs to nil at call time), so capture the
 ;; actor dir at load and read the on-disk seed lazily from it (dev/host mode; no embedded module
 ;; in the .cljc port).
-#?(:clj (def ^:private actor-dir (-> *file* io/file .getParentFile .getParentFile)))
+#?(:clj (def ^:private actor-dir (io/file ".")))
 
 #?(:clj
    (defn- seed-text []

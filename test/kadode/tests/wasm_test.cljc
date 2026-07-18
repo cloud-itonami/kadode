@@ -1,4 +1,4 @@
-(ns kadode.tests.test-wasm
+(ns kadode.tests.wasm-test
   "kadode 門出 — WASM component entry tests (ADR-2606112238). 1:1 Clojure port of
   tests/test_wasm.py (pytest → clojure.test). Pure stdlib, NETWORK-FREE.
 

@@ -1,4 +1,4 @@
-(ns kadode.tests.test-coverage
+(ns kadode.tests.coverage-test
   "kadode 門出 — coverage-report tests (ADR-2606112238). 1:1 Clojure port of tests/test_coverage.py."
   (:require [clojure.test :refer [deftest is testing run-tests]]
             [clojure.string :as str]
@@ -7,7 +7,7 @@
             [kadode.methods.analyze :as analyze]
             [kadode.methods.coverage-report :as coverage]))
 
-(def actor-dir (-> *file* io/file .getParentFile .getParentFile))
+(def actor-dir (io/file "."))
 (def seed (io/file actor-dir "data" "seed-resignation-graph.kotoba.edn"))
 
 (defn load-seed [] (analyze/load-file* seed))

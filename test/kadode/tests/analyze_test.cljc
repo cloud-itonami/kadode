@@ -1,4 +1,4 @@
-(ns kadode.tests.test-analyze
+(ns kadode.tests.analyze-test
   "kadode 門出 — analyzer + UPL-boundary tests (ADR-2606112238). 1:1 Clojure port of the PURE
   assertions of tests/test_analyze.py.
 
@@ -23,7 +23,7 @@
             [clojure.java.io :as io]
             [kadode.methods.analyze :as analyze]))
 
-(def actor-dir (-> *file* io/file .getParentFile .getParentFile))
+(def actor-dir (io/file "."))
 (def seed (io/file actor-dir "data" "seed-resignation-graph.kotoba.edn"))
 
 (defn load-seed [] (analyze/load-file* seed))
