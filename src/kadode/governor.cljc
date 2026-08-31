@@ -1,0 +1,198 @@
+(ns kadode.governor
+  "kadode 門出 — the G1/G7 admission gate over kadode's two outward record types.
+
+  WHY THIS EXISTS. `manifest.jsonld` declares G1 \"Enforced in code: recommend_route +
+  build_relay refuse + escalate; test-covered\". Those live in `methods/analyze.cljc` and
+  `methods/generate.cljc`, whose namespaces (`kadode.methods.*`) do not match their on-disk
+  paths (`methods/*.cljc`), so NO classpath root can load them and no runnable test executes a
+  single G1 assertion — `clojure -M:test` exits 0 having checked nothing about the boundary.
+  This namespace is the boundary as *loadable, executed* code. It does not replace the
+  producer in `methods/generate.cljc`; it is the independent gate a producer's output must
+  pass, which is what makes it a governor rather than a second copy of the producer.
+
+  WHAT IT ENFORCES. Two sources, kept distinct on purpose:
+
+    (1) STRUCTURE, derived from the lexicon data itself (`lex/*.edn`) — required fields, enum
+        membership, string length bounds. Derived rather than restated so the gate cannot
+        drift from the published contract. If the lexicon changes, this moves with it.
+
+    (2) DECLARED PROSE, which the lexicon states as a hard invariant but cannot express in its
+        own schema vocabulary. Each is quoted at its check site:
+          · resignationRelay/negotiates — \"MUST be false ... a true value is structurally invalid\"
+          · escalation/relayed          — \"MUST be false — kadode did NOT relay this matter\"
+          · resignationRelay/status     — \"The record is created UNSENT; actually transmitting it
+                                           is a G7-gated outward action requiring the worker's
+                                           consent\"
+          · resignationRelay (whole)    — \"any matter needing negotiation produces a
+                                           `com.etzhayyim.kadode.escalation` instead\"
+
+  Every refusal names a reason from `refusal-reasons`, and every reason in that set is reached
+  by a single-field mutation of an otherwise-valid record in `test/kadode/governor_test.cljc`.
+  A refusal that cannot be produced for the reason it names is theatre; the test suite fails if
+  any declared reason goes unexercised.
+
+  House style (matches methods/): pure fns, string-keyed maps, file I/O only at the :clj edge."
+  (:require [clojure.string :as str]
+            #?@(:clj [[clojure.java.io :as io]
+                      [clojure.edn :as edn]])))
+
+(def relay-type "com.etzhayyim.kadode.resignationRelay")
+(def escalation-type "com.etzhayyim.kadode.escalation")
+
+(def record-types #{relay-type escalation-type})
+
+(def refusal-reasons
+  "Every reason this gate can name. The suite asserts each one is actually reached."
+  #{:record/unknown-type
+    :record/missing-required-field
+    :record/field-not-in-enum
+    :record/field-length-out-of-bounds
+    :record/document-sha256-malformed
+    :g1/negotiates-must-be-false
+    :g1/escalation-must-not-claim-relay
+    :g1/negotiation-must-not-relay
+    :g7/outward-send-needs-consent})
+
+(def ^:private minted-status
+  "resignationRelay is created UNSENT. Anything further along the lifecycle is a transmission,
+  which is a separate G7-gated action with the worker's consent — not something a record may be
+  minted at."
+  "drafted-unsent")
+
+;; ── lexicon access ─────────────────────────────────────────────────────────────
+
+(defn record-schema
+  "The `defs.main.record` object of a lexicon, or nil."
+  [lexicon]
+  (get-in lexicon ["defs" "main" "record"]))
+
+(defn- vals-or-seq
+  "Accept either a map of id→lexicon or a plain seq of lexicons."
+  [lexicons]
+  (if (map? lexicons) (vals lexicons) (seq lexicons)))
+
+(defn- lexicon-for
+  "The lexicon whose `id` is `$type`, from a seq/coll of lexicons."
+  [lexicons t]
+  (first (filter #(= t (get % "id")) (vals-or-seq lexicons))))
+
+;; ── structural checks, derived from the lexicon ────────────────────────────────
+
+(defn- check-required
+  "Every name in the lexicon's `required` must be present (and non-nil) on the record."
+  [schema record]
+  (when-let [missing (first (remove #(some? (get record %)) (get schema "required" [])))]
+    {:reason :record/missing-required-field :detail {:field missing}}))
+
+(defn- check-enums
+  "Any present field whose property declares `enum` must hold one of those values."
+  [schema record]
+  (some (fn [[fname prop]]
+          (let [allowed (get prop "enum")
+                v (get record fname)]
+            (when (and (seq allowed) (some? v) (not (some #(= v %) allowed)))
+              {:reason :record/field-not-in-enum
+               :detail {:field fname :value v :allowed (vec allowed)}})))
+        (get schema "properties" {})))
+
+(defn- check-lengths
+  "Any present string field must honour the property's minLength / maxLength."
+  [schema record]
+  (some (fn [[fname prop]]
+          (let [v (get record fname)]
+            (when (string? v)
+              (let [n (count v)
+                    lo (get prop "minLength")
+                    hi (get prop "maxLength")]
+                (when (or (and lo (< n lo)) (and hi (> n hi)))
+                  {:reason :record/field-length-out-of-bounds
+                   :detail {:field fname :length n :min lo :max hi}})))))
+        (get schema "properties" {})))
+
+;; ── declared-prose invariants ──────────────────────────────────────────────────
+
+(def ^:private sha256-0x-re #"0x[0-9a-f]{64}")
+
+(defn- check-document-sha256
+  "documentSha256 is \"0x-prefixed lowercase hex SHA-256\". Length is already covered by the
+  lexicon's 66/66 bound; this is the alphabet the prose names and the schema cannot."
+  [record]
+  (let [v (get record "documentSha256")]
+    (when (and (string? v) (not (re-matches sha256-0x-re v)))
+      {:reason :record/document-sha256-malformed :detail {:value v}})))
+
+(defn- check-relay-prose
+  [record]
+  (or
+   ;; \"negotiates ... MUST be false. kadode never negotiates (弁護士法72条); a true value is
+   ;; structurally invalid.\"
+   (when-not (false? (get record "negotiates"))
+     {:reason :g1/negotiates-must-be-false :detail {:value (get record "negotiates")}})
+   ;; \"The record is created UNSENT; actually transmitting it is a G7-gated outward action
+   ;; requiring the worker's consent (no-server-key).\"
+   (when-not (= minted-status (get record "status"))
+     {:reason :g7/outward-send-needs-consent
+      :detail {:status (get record "status") :must-be minted-status}})
+   (check-document-sha256 record)))
+
+(defn- check-escalation-prose
+  [record]
+  ;; \"relayed ... MUST be false — kadode did NOT relay this matter (it needs negotiation, G1).\"
+  (when-not (false? (get record "relayed"))
+    {:reason :g1/escalation-must-not-claim-relay :detail {:value (get record "relayed")}}))
+
+;; ── the gate ───────────────────────────────────────────────────────────────────
+
+(defn admit
+  "Admit or refuse one outward record.
+
+  `lexicons` is a map id→lexicon (or a seq of lexicons) as published in `lex/`.
+  `ctx` may carry `:needs-negotiation?` — the scenario's own flag, which the record itself
+  cannot be trusted to report. When it is true, a relay record is refused outright: a matter
+  needing negotiation must leave kadode as an escalation, never as a 使者 relay (G1 /
+  弁護士法72条).
+
+  Returns {:admitted? true} or {:admitted? false :reason <kw from refusal-reasons> :detail m}."
+  ([lexicons record] (admit lexicons record {}))
+  ([lexicons record ctx]
+   (let [t (get record "$type")
+         lex (lexicon-for lexicons t)
+         schema (record-schema lex)]
+     (if-not (and (record-types t) schema)
+       {:admitted? false :reason :record/unknown-type :detail {:$type t}}
+       (let [relay? (= t relay-type)
+             failure (or
+                      ;; G1 cross-check first: for a negotiation matter the whole record kind is
+                      ;; wrong, and saying so is more useful than a field-level complaint.
+                      (when (and relay? (:needs-negotiation? ctx))
+                        {:reason :g1/negotiation-must-not-relay
+                         :detail {:scenario (get record "scenario")}})
+                      (check-required schema record)
+                      (check-enums schema record)
+                      (check-lengths schema record)
+                      (if relay?
+                        (check-relay-prose record)
+                        (check-escalation-prose record)))]
+         (if failure
+           (assoc failure :admitted? false)
+           {:admitted? true}))))))
+
+(defn admit!
+  "Fail-closed form: return the record, or throw ex-info naming the refusal reason."
+  ([lexicons record] (admit! lexicons record {}))
+  ([lexicons record ctx]
+   (let [v (admit lexicons record ctx)]
+     (if (:admitted? v)
+       record
+       (throw (ex-info (str "kadode governor refused " (pr-str (get record "$type"))
+                            ": " (name (:reason v)))
+                       (assoc v :record-type (get record "$type"))))))))
+
+#?(:clj
+   (defn load-lexicons
+     "File I/O edge: read `lex/*.edn` into a map id→lexicon."
+     [dir]
+     (->> (.listFiles (io/file dir))
+          (filter #(str/ends-with? (.getName ^java.io.File %) ".edn"))
+          (map (fn [f] (edn/read-string (slurp f))))
+          (reduce (fn [m lex] (assoc m (get lex "id") lex)) {}))))
