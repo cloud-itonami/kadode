@@ -11,7 +11,7 @@
       returns the escalation route instead (the action-layer UPL boundary, G1)
     - the relay record is drafted-UNSENT (no-server-key); document is content-addressed"
   (:require [clojure.test :refer [deftest is run-tests]]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [clojure.java.io :as io]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.cid :as cid]

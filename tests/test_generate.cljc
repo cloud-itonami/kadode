@@ -13,7 +13,7 @@
 
   The Python __main__ demo runner is intentionally omitted (no behaviour, just printing)."
   (:require [clojure.test :refer [deftest is testing run-tests]]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [clojure.java.io :as io]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.cid :as cid]

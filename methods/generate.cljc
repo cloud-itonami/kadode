@@ -24,7 +24,7 @@
   House style: Python ':…' keyword strings stay strings; the analyze ns + its load/recommend-route
   /negotiating-actors API are reused verbatim; CID/SHA at the cid ns edge; pure fns; the only
   host edge is file I/O in -main."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.cid :as cid]))
 

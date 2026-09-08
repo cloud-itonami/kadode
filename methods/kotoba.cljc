@@ -22,7 +22,7 @@
   appends to a local file. G1: kadode is a 使者 (messenger), never an agent — the
   ledger records the worker's own resignation posture, never advice, never
   negotiation (弁護士法72条 boundary encoded in the routes)."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             #?(:clj [clojure.java.io :as io])))
 
 (defn add [entity attr value] [":db/add" entity attr value])
