@@ -11,7 +11,7 @@
   `analyze` + `relay` return JSON strings (ensure_ascii=False parity — UTF-8 kept literal);
   `datoms` + `coverage` + `generate` return the methods' own EDN/markdown/document text.
   Self-contained tiny JSON reader + encoder (no cheshire/data.json)."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.datom-emit :as datom-emit]
             [kadode.methods.coverage-report :as coverage]

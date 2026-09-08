@@ -1,7 +1,7 @@
 (ns kadode.tests.test-coverage
   "kadode 門出 — coverage-report tests (ADR-2606112238). 1:1 Clojure port of tests/test_coverage.py."
   (:require [clojure.test :refer [deftest is testing run-tests]]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [clojure.set]
             [clojure.java.io :as io]
             [kadode.methods.analyze :as analyze]

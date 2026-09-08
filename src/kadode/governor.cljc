@@ -32,7 +32,7 @@
   any declared reason goes unexercised.
 
   House style (matches methods/): pure fns, string-keyed maps, file I/O only at the :clj edge."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             #?@(:clj [[clojure.java.io :as io]
                       [clojure.edn :as edn]])))
 

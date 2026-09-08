@@ -13,7 +13,7 @@
   wall clock, no Math/random) → resume-safe. IDEMPOTENT-BY-CONTENT: a beat whose ground
   datoms equal the previous beat's is a NO-OP (nothing appended). No-server-key: appends
   to a local file only, no network I/O. G1: a 使者 record, never advice/negotiation."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kadode.methods.datom-emit :as de]
             [kadode.methods.kotoba :as k]
             #?(:clj [clojure.java.io :as io])))

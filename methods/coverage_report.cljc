@@ -8,7 +8,7 @@
   route). Coverage of all employment situations is bounded by design (G5).
 
   Pure fns; reuses kadode.methods.analyze for the loader + route logic. Portable .cljc."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [clojure.set]
             [kadode.methods.analyze :as analyze]))
 
