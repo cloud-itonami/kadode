@@ -1,6 +1,6 @@
 #!/usr/bin/env bb
 ;; kadode 門出 — tests for risk-counters (the employer-tactic → counter-ground preparedness map).
-;; Run:  bb --classpath 20-actors 20-actors/kadode/methods/test_risk_counters.cljc
+;; Run:  bb --classpath 20-actors 20-actors/kadode/methods/test_risk_counters.cljk
 (ns kadode.methods.test-risk-counters
   "Tests for risk-counters — each employer 引き止め risk pattern mapped to the legal grounds that
   counter it (disclosed legal facts, G3/N3). kadode INFORMS, never advises/represents (G1); an
