@@ -1,4 +1,4 @@
-#!/usr/bin/env bb
+#!/usr/bin/env kbb
 ;; kadode 門出 — autonomous heartbeat: load the resignation graph → append GROUND datoms.
 (ns kadode.methods.autorun
   "autorun.cljc — kadode 門出 deterministic heartbeat (ADR-2606112238, tate/hinagata pattern).

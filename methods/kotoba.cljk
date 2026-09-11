@@ -1,4 +1,4 @@
-#!/usr/bin/env bb
+#!/usr/bin/env kbb
 ;; kadode 門出 — resignation-graph DATOM-LOG writer (content-addressed commit-DAG).
 (ns kadode.methods.kotoba
   "kotoba.cljc — kadode 門出 append-only RESIGNATION-GRAPH LEDGER writer

@@ -5,7 +5,7 @@
   build_relay refuse + escalate; test-covered\". Those live in `methods/analyze.cljk` and
   `methods/generate.cljk`, whose namespaces (`kadode.methods.*`) do not match their on-disk
   paths (`methods/*.cljc`), so NO classpath root can load them and no runnable test executes a
-  single G1 assertion — `clojure -M:test` exits 0 having checked nothing about the boundary.
+  single G1 assertion — `kbb -M:test` exits 0 having checked nothing about the boundary.
   This namespace is the boundary as *loadable, executed* code. It does not replace the
   producer in `methods/generate.cljk`; it is the independent gate a producer's output must
   pass, which is what makes it a governor rather than a second copy of the producer.
