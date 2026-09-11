@@ -2,12 +2,12 @@
   "kadode 門出 — the G1/G7 admission gate over kadode's two outward record types.
 
   WHY THIS EXISTS. `manifest.jsonld` declares G1 \"Enforced in code: recommend_route +
-  build_relay refuse + escalate; test-covered\". Those live in `methods/analyze.cljc` and
-  `methods/generate.cljc`, whose namespaces (`kadode.methods.*`) do not match their on-disk
+  build_relay refuse + escalate; test-covered\". Those live in `methods/analyze.cljk` and
+  `methods/generate.cljk`, whose namespaces (`kadode.methods.*`) do not match their on-disk
   paths (`methods/*.cljc`), so NO classpath root can load them and no runnable test executes a
   single G1 assertion — `clojure -M:test` exits 0 having checked nothing about the boundary.
   This namespace is the boundary as *loadable, executed* code. It does not replace the
-  producer in `methods/generate.cljc`; it is the independent gate a producer's output must
+  producer in `methods/generate.cljk`; it is the independent gate a producer's output must
   pass, which is what makes it a governor rather than a second copy of the producer.
 
   WHAT IT ENFORCES. Two sources, kept distinct on purpose:
@@ -27,7 +27,7 @@
                                            `com.etzhayyim.kadode.escalation` instead\"
 
   Every refusal names a reason from `refusal-reasons`, and every reason in that set is reached
-  by a single-field mutation of an otherwise-valid record in `test/kadode/governor_test.cljc`.
+  by a single-field mutation of an otherwise-valid record in `test/kadode/governor_test.cljk`.
   A refusal that cannot be produced for the reason it names is theatre; the test suite fails if
   any declared reason goes unexercised.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bb
 ;; kadode 門出 — resignation-graph-ledger persistence + heartbeat tests.
-;; Run:  bb --classpath 20-actors 20-actors/kadode/tests/test_kotoba.cljc
+;; Run:  bb --classpath 20-actors 20-actors/kadode/tests/test_kotoba.cljk
 (ns kadode.tests.test-kotoba
   (:require [kadode.methods.kotoba :as k]
             [kadode.methods.autorun :as auto]
