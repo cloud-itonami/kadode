@@ -9,7 +9,7 @@
 
   Pure fns; reuses kadode.methods.analyze for the loader + route logic. Portable .cljc."
   (:require [kotoba.lang.text :as str]
-            [clojure.set]
+            [kotoba.lang.coll]
             [kadode.methods.analyze :as analyze]))
 
 (def employment [":no-fixed-term" ":fixed-term" ":fixed-term-1yr+" ":probation" ":dispatch"])
@@ -49,7 +49,7 @@
          scen)
         countered (set (for [e edges :when (= ":counters" (get e ":en/kind"))] (get e ":en/to")))
         risk-ids (set (map #(get % ":lx/id") risks))
-        uncountered (sort (clojure.set/difference risk-ids countered))
+        uncountered (sort (kotoba.lang.coll/difference risk-ids countered))
         L (transient [])]
     (conj! L "# kadode 門出 — labour-exit coverage report\n")
     (conj! L (str "> Honest denominator: coverage of all employment situations is bounded by design "

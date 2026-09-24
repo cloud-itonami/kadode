@@ -12,12 +12,12 @@
     - the relay record is drafted-UNSENT (no-server-key); document is content-addressed"
   (:require [kotoba.test :refer [deftest is run-tests]]
             [kotoba.lang.text :as str]
-            [clojure.java.io :as io]
+            [kotoba.io :as io]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.cid :as cid]
             [kadode.methods.generate :as generate]))
 
-(def actor-dir (-> *file* io/file .getParentFile .getParentFile))
+(def actor-dir (-> *file* io/file io/parent-file io/parent-file))
 (def seed (io/file actor-dir "data" "seed-resignation-graph.kotoba.edn"))
 (defn load-seed [] (analyze/load-file* seed))
 

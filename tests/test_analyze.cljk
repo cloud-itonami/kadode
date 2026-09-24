@@ -19,11 +19,11 @@
   are ported 1:1."
   (:require [kotoba.test :refer [deftest is testing run-tests]]
             [kotoba.lang.text :as str]
-            [clojure.set]
-            [clojure.java.io :as io]
+            [kotoba.lang.coll]
+            [kotoba.io :as io]
             [kadode.methods.analyze :as analyze]))
 
-(def actor-dir (-> *file* io/file .getParentFile .getParentFile))
+(def actor-dir (-> *file* io/file io/parent-file io/parent-file))
 (def seed (io/file actor-dir "data" "seed-resignation-graph.kotoba.edn"))
 
 (defn load-seed [] (analyze/load-file* seed))
@@ -33,7 +33,7 @@
     (is (>= (count nodes) 30) (str (count nodes) " nodes / " (count edges) " 縁"))
     (is (>= (count edges) 40) (str (count nodes) " nodes / " (count edges) " 縁"))
     (let [kinds (set (map #(get % ":lx/kind") (vals nodes)))]
-      (is (clojure.set/subset? #{":scenario" ":ground" ":document" ":route" ":risk"} kinds)))
+      (is (kotoba.lang.coll/subset? #{":scenario" ":ground" ":document" ":route" ":risk"} kinds)))
     (doseq [e edges]
       (is (contains? nodes (get e ":en/from")) (str "dangling 縁: " e))
       (is (contains? nodes (get e ":en/to")) (str "dangling 縁: " e)))))

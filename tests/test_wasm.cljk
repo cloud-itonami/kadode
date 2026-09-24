@@ -5,7 +5,7 @@
   The Python __main__ demo runner is intentionally omitted (no behaviour, just printing)."
   (:require [kotoba.test :refer [deftest is run-tests]]
             [kotoba.lang.text :as str]
-            [clojure.set]
+            [kotoba.lang.coll]
             [kadode.wasm.app :as app]))
 
 (deftest test-analyze-export-shape

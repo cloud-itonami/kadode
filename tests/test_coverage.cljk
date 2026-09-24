@@ -2,12 +2,12 @@
   "kadode 門出 — coverage-report tests (ADR-2606112238). 1:1 Clojure port of tests/test_coverage.py."
   (:require [kotoba.test :refer [deftest is testing run-tests]]
             [kotoba.lang.text :as str]
-            [clojure.set]
-            [clojure.java.io :as io]
+            [kotoba.lang.coll]
+            [kotoba.io :as io]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.coverage-report :as coverage]))
 
-(def actor-dir (-> *file* io/file .getParentFile .getParentFile))
+(def actor-dir (-> *file* io/file io/parent-file io/parent-file))
 (def seed (io/file actor-dir "data" "seed-resignation-graph.kotoba.edn"))
 
 (defn load-seed [] (analyze/load-file* seed))
@@ -29,7 +29,7 @@
     (let [{:keys [nodes]} (load-seed)
           actors (set (for [n (vals nodes) :when (= ":route" (get n ":lx/kind"))]
                         (get n ":route/actor")))]
-      (is (clojure.set/subset?
+      (is (kotoba.lang.coll/subset?
            #{":worker-self" ":kadode-messenger" ":labor-union" ":lawyer"} actors)))))
 
 (deftest test-every-scenario-and-risk-covered
