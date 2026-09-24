@@ -3,7 +3,7 @@
   tests/test_wasm.py (pytest → clojure.test). Pure stdlib, NETWORK-FREE.
 
   The Python __main__ demo runner is intentionally omitted (no behaviour, just printing)."
-  (:require [clojure.test :refer [deftest is run-tests]]
+  (:require [kotoba.test :refer [deftest is run-tests]]
             [kotoba.lang.text :as str]
             [clojure.set]
             [kadode.wasm.app :as app]))

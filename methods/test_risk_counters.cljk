@@ -6,7 +6,7 @@
   counter it (disclosed legal facts, G3/N3). kadode INFORMS, never advises/represents (G1); an
   uncountered tactic surfaces as a coverage gap."
   (:require [kadode.methods.analyze :as a]
-            [clojure.test :refer [deftest is run-tests]]))
+            [kotoba.test :refer [deftest is run-tests]]))
 
 (def ^:private nodes
   {"r1" {":lx/kind" ":risk" ":risk/pattern" "退職拒否"   ":lx/label" "退職を認めない"}
