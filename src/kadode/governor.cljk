@@ -34,7 +34,7 @@
   House style (matches methods/): pure fns, string-keyed maps, file I/O only at the :clj edge."
   (:require [kotoba.lang.text :as str]
             #?@(:clj [[clojure.java.io :as io]
-                      [clojure.edn :as edn]])))
+                      [kotoba.lang.edn :as edn]])))
 
 (def relay-type "com.etzhayyim.kadode.resignationRelay")
 (def escalation-type "com.etzhayyim.kadode.escalation")
