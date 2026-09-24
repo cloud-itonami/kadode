@@ -18,7 +18,7 @@
   on the order clojure.test happens to walk the vars in."
   (:require [kotoba.test :refer [deftest is testing]]
             [kadode.governor :as gov]
-            #?(:clj [clojure.java.io :as io])))
+            #?(:clj [kotoba.io :as io])))
 
 (def lexicons
   #?(:clj (gov/load-lexicons (io/file (System/getProperty "user.dir") "lex"))
