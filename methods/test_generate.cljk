@@ -10,7 +10,7 @@
     - build-relay RELAYS a non-negotiating scenario but REFUSES a negotiation-needing one and
       returns the escalation route instead (the action-layer UPL boundary, G1)
     - the relay record is drafted-UNSENT (no-server-key); document is content-addressed"
-  (:require [clojure.test :refer [deftest is run-tests]]
+  (:require [kotoba.test :refer [deftest is run-tests]]
             [kotoba.lang.text :as str]
             [clojure.java.io :as io]
             [kadode.methods.analyze :as analyze]

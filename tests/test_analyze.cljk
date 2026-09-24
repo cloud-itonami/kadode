@@ -17,7 +17,7 @@
   the unported `datom_emit` module, so they are intentionally DEFERRED here (the datom_emit
   port is a separate unit, mirroring the inochi/rasen precedent). All PURE analyze assertions
   are ported 1:1."
-  (:require [clojure.test :refer [deftest is testing run-tests]]
+  (:require [kotoba.test :refer [deftest is testing run-tests]]
             [kotoba.lang.text :as str]
             [clojure.set]
             [clojure.java.io :as io]

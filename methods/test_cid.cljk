@@ -5,7 +5,7 @@
   documentCid assertion). This suite pins the ported `cid.cljc` byte-for-byte against vectors
   computed by `python3 methods/cid.py` / hashlib — CIDv1 raw (0x55) / sha2-256 / multibase
   base32-lower 'b', and the 0x-prefixed sha256 hex — so any drift from python3 fails here."
-  (:require [clojure.test :refer [deftest is run-tests]]
+  (:require [kotoba.test :refer [deftest is run-tests]]
             [kadode.methods.cid :as cid]))
 
 ;; vectors verified byte-identical against python3 hashlib + cid.py (empty / ascii / 日本語 / ㊞).

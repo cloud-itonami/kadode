@@ -16,7 +16,7 @@
 
   Coverage is derived from the table rather than from a mutable counter, so it does not depend
   on the order clojure.test happens to walk the vars in."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kadode.governor :as gov]
             #?(:clj [clojure.java.io :as io])))
 
