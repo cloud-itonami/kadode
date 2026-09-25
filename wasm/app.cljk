@@ -16,7 +16,7 @@
             [kadode.methods.datom-emit :as datom-emit]
             [kadode.methods.coverage-report :as coverage]
             [kadode.methods.generate :as generate]
-            #?(:clj [clojure.java.io :as io])))
+            #?(:clj [kotoba.io :as io])))
 
 ;; ── tiny JSON encoder (ensure_ascii=False parity: non-ASCII kept literal) ───────
 (defn- json-escape ^String [^String s]
@@ -126,7 +126,7 @@
 ;; *file* is only bound during namespace load (it derefs to nil at call time), so capture the
 ;; actor dir at load and read the on-disk seed lazily from it (dev/host mode; no embedded module
 ;; in the .cljc port).
-#?(:clj (def ^:private actor-dir (-> *file* io/file .getParentFile .getParentFile)))
+#?(:clj (def ^:private actor-dir (-> *file* io/file io/parent-file io/parent-file)))
 
 #?(:clj
    (defn- seed-text []

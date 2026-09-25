@@ -24,7 +24,7 @@
   House style: Python ':…' keyword strings stay strings; the analyze ns + its load/recommend-route
   /negotiating-actors API are reused verbatim; CID/SHA at the cid ns edge; pure fns; the only
   host edge is file I/O in -main."
-  (:require [kotoba.lang.text :as str]
+  (:require [kotoba.bytes :as kbytes] [kotoba.lang.text :as str]
             [kadode.methods.analyze :as analyze]
             [kadode.methods.cid :as cid]))
 
@@ -157,7 +157,7 @@
            doc (render kind fields)]
        (.mkdirs outdir)
        (spit (clojure.java.io/file outdir (str kind ".md")) doc)
-       (println (str "kadode generate: " kind " → " (count (.getBytes ^String doc "UTF-8")) " B"))
+       (println (str "kadode generate: " kind " → " (count (kbytes/utf8-bytes ^String doc)) " B"))
        (println (str "  documentCid:    " (cid/cidv1-raw doc)))
        (println (str "  → " (clojure.java.io/file outdir (str kind ".md"))
                      " (worker drafts + self-submits; relay is G7-gated)"))

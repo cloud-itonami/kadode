@@ -18,7 +18,7 @@
   metadata on the nodes map (load-file*), falling back to (keys nodes)."
   (:require [kotoba.lang.text :as str]
             [kadode.methods.analyze :as analyze]
-            #?(:clj [clojure.java.io :as io])))
+            #?(:clj [kotoba.io :as io])))
 
 ;; attributes promoted from each node/edge map into ground datoms (stable order = determinism)
 (def node-attrs
@@ -137,7 +137,7 @@
      "CLI entry: analyze a seed EDN graph → out/resignation-datoms.kotoba.edn (file I/O at the edge)."
      [& argv]
      (let [argv (vec argv)
-           here (-> *file* io/file .getParentFile .getParentFile)
+           here (-> *file* io/file io/parent-file io/parent-file)
            seed (if (and (seq argv) (not (str/starts-with? (first argv) "--")))
                   (io/file (first argv))
                   (io/file here "data" "seed-resignation-graph.kotoba.edn"))
@@ -150,7 +150,7 @@
            {:keys [nodes edges]} (load-file* seed)
            res (analyze/analyze nodes edges)
            out (io/file outdir "resignation-datoms.kotoba.edn")]
-       (.mkdirs outdir)
+       (io/mkdirs outdir)
        (spit out (emit nodes edges res tx))
        (println (str "kadode datom log → " out " (" (count nodes) " nodes + " (count edges)
                      " 縁, tx=" tx ")"))
