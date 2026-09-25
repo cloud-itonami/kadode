@@ -23,7 +23,7 @@
   ledger records the worker's own resignation posture, never advice, never
   negotiation (弁護士法72条 boundary encoded in the routes)."
   (:require [kotoba.bytes :as kbytes] [kotoba.lang.text :as str]
-            #?(:clj [clojure.java.io :as io])))
+            #?(:clj [kotoba.io :as io])))
 
 (defn add [entity attr value] [":db/add" entity attr value])
 
@@ -130,8 +130,8 @@
    (do
      (defn append-tx [tx log-path]
        (let [f (io/file log-path)]
-         (when-let [p (.getParentFile f)] (.mkdirs p))
-         (when-not (.exists f)
+         (when-let [p (io/parent-file f)] (io/mkdirs p))
+         (when-not (io/exists? f)
            (spit f (str ";; kadode 門出 — RESIGNATION-GRAPH LEDGER (append-only, content-addressed "
                         "EAVT commit-DAG of the labour-exit scenario/ground/route graph). Generated; "
                         "DO NOT hand-edit. A 使者 record — never advice, never negotiation. "
@@ -141,7 +141,7 @@
 
      (defn read-log [log-path]
        (let [f (io/file log-path)]
-         (if-not (.exists f) []
+         (if-not (io/exists? f) []
                  (->> (str/split-lines (slurp f))
                       (map str/trim)
                       (remove #(or (empty? %) (str/starts-with? % ";")))

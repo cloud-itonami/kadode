@@ -133,7 +133,7 @@
   (testing "throws, naming the reason in ex-data"
     (let [e (try (gov/admit! lexicons (assoc valid-relay "negotiates" true))
                  nil
-                 (catch #?(:clj clojure.lang.ExceptionInfo :cljs :default) ex ex))]
+                 (catch :default ex ex))]
       (is (some? e) "admit! must throw on a refused record")
       (is (= :g1/negotiates-must-be-false (:reason (ex-data e))))))
   (testing "returns the record itself when admitted"

@@ -10,7 +10,7 @@
     - build-relay RELAYS a non-negotiating scenario but REFUSES a negotiation-needing one and
       returns the escalation route instead (the action-layer UPL boundary, G1)
     - the relay record is drafted-UNSENT (no-server-key); document is content-addressed"
-  (:require [kotoba.test :refer [deftest is run-tests]]
+  (:require [kotoba.lang.error :as kerror] [kotoba.test :refer [deftest is run-tests]]
             [kotoba.lang.text :as str]
             [kotoba.io :as io]
             [kadode.methods.analyze :as analyze]
@@ -38,13 +38,13 @@
 
 (deftest test-assert-no-negotiation-rejects-demands
   (doseq [bad ["示談金を支払えと請求します" "退職金を増額する条件交渉をしたい" "慰謝料を請求"]]
-    (is (thrown? clojure.lang.ExceptionInfo (generate/assert-no-negotiation bad))
+    (is (thrown? kerror/ExceptionInfo (generate/assert-no-negotiation bad))
         (str "negotiation text accepted: " bad)))
   ;; clean text passes (no throw)
   (is (nil? (generate/assert-no-negotiation "一身上の都合により退職します"))))
 
 (deftest test-render-rejects-negotiation-in-note-field
-  (is (thrown? clojure.lang.ExceptionInfo
+  (is (thrown? kerror/ExceptionInfo
                (generate/render "taishoku-todoke" {"worker" "A" "note" "解決金を請求します"}))
       "render accepted negotiation language in note"))
 

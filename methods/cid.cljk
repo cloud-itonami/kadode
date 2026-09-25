@@ -12,7 +12,8 @@
 
   House style: pure fns; the only host edge is sha2-256 (`java.security.MessageDigest \"SHA-256\"`
   at the #?(:clj) edge — the JVM stdlib ships SHA-256, so no hand-port needed, unlike shomei's
-  BLAKE2b). Bytes are unsigned-int 0..255 throughout (a JVM `byte` is signed, so we mask & 0xff).")
+  BLAKE2b). Bytes are unsigned-int 0..255 throughout (a JVM `byte` is signed, so we mask & 0xff)."
+  (:require [kotoba.bytes :as kbytes]))
 
 ;; RFC4648 base32 lower, no padding (multibase 'b'); mirrors cid.py's _B32 string exactly.
 (def ^:private b32 "abcdefghijklmnopqrstuvwxyz234567")
@@ -54,7 +55,7 @@
    (defn ->bytes
      "Coerce a String (UTF-8) or byte-array to a byte-array (the document body)."
      ^bytes [data]
-     (if (string? data) (.getBytes ^String data "UTF-8") data)))
+     (if (string? data) (kbytes/utf8-bytes ^String data) data)))
 
 #?(:clj
    (defn cidv1-raw

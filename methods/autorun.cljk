@@ -16,7 +16,7 @@
   (:require [kotoba.lang.text :as str]
             [kadode.methods.datom-emit :as de]
             [kadode.methods.kotoba :as k]
-            #?(:clj [clojure.java.io :as io])))
+            #?(:clj [kotoba.io :as io])))
 
 (defn- node-order [nodes]
   ;; load-file* attaches :kadode.methods.datom-emit/node-order; fall back to (keys nodes)
@@ -42,7 +42,7 @@
 
 #?(:clj
    (def ^:private here-dir
-     (-> *file* io/file .getCanonicalFile .getParentFile .getParentFile)))
+     (-> *file* io/file io/canonical-file io/parent-file io/parent-file)))
 
 #?(:clj
    (defn default-seed-path []

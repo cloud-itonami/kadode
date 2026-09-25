@@ -33,7 +33,7 @@
 
   House style (matches methods/): pure fns, string-keyed maps, file I/O only at the :clj edge."
   (:require [kotoba.lang.text :as str]
-            #?@(:clj [[clojure.java.io :as io]
+            #?@(:clj [[kotoba.io :as io]
                       [kotoba.lang.edn :as edn]])))
 
 (def relay-type "com.etzhayyim.kadode.resignationRelay")
@@ -192,7 +192,7 @@
    (defn load-lexicons
      "File I/O edge: read `lex/*.edn` into a map id→lexicon."
      [dir]
-     (->> (.listFiles (io/file dir))
-          (filter #(str/ends-with? (.getName ^java.io.File %) ".edn"))
+     (->> (io/list-files (io/file dir))
+          (filter #(str/ends-with? (io/file-name %) ".edn"))
           (map (fn [f] (edn/read-string (slurp f))))
           (reduce (fn [m lex] (assoc m (get lex "id") lex)) {}))))
