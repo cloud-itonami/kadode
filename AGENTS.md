@@ -64,7 +64,7 @@ Only **union** and **lawyer** carry `:route/can-negotiate true`. The analyzer co
 
 ```
 20-actors/kadode/
-├── CLAUDE.md · README.md · manifest.jsonld
+├── AGENTS.md · README.md · manifest.jsonld
 ├── data/seed-resignation-graph.kotoba.edn   # scenario↔ground↔route↔risk graph (real JP labour law)
 ├── methods/                                  # pure-stdlib (no numpy) → kotoba pywasm-runnable
 │   ├── analyze.py            # edge-primary UPL-bounded route recommendation

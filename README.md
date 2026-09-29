@@ -40,4 +40,4 @@ python3 methods/generate.py --kind taishoku-todoke --worker 山田太郎 --emplo
 python3 tests/test_analyze.py && python3 tests/test_generate.py && python3 tests/test_coverage.py && python3 tests/test_wasm.py
 ```
 
-See `CLAUDE.md` for the full gate set.
+See `AGENTS.md` for the full gate set.
